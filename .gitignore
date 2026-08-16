@@ -49,4 +49,10 @@ logs/
 .env
 
 # Keep project folders themselves visible
-# Do NOT ignore data/, models/, frontend/, deploy/, src/
+# Do NOT ignore data/, models/, frontend/, deploy/, src/cache/
+data/
+models/
+frontend/node_modules/
+.venv/
+__pycache__/
+*.pyc

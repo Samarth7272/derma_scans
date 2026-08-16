@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Skin Disease AI</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: #07110e;
+      color: #f5f5f0;
+      padding: 30px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #26352f;
+      margin-bottom: 45px;
+    }
+
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #e58b42;
+    }
+
+    .status {
+      padding: 8px 15px;
+      border: 1px solid #34443d;
+      border-radius: 30px;
+      color: #9aaba3;
+      font-size: 13px;
+    }
+
+    .status.ready {
+      color: #54c7a7;
+    }
+
+    .status.error {
+      color: #e66b58;
+    }
+
+    .hero {
+      margin-bottom: 35px;
+    }
+
+    .hero small {
+      color: #e58b42;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      font-size: 45px;
+      margin: 12px 0;
+    }
+
+    .hero p {
+      color: #9aaba3;
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 380px 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      background: #111d18;
+      border: 1px solid #2a3933;
+      border-radius: 18px;
+      padding: 25px;
+    }
+
+    .card-title {
+      color: #9aaba3;
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #293731;
+      margin-bottom: 25px;
+    }
+
+    /* UPLOAD AREA */
+
+    .upload-area {
+      width: 260px;
+      height: 260px;
+      margin: 10px auto 20px;
+      border-radius: 50%;
+      border: 4px dashed #35463f;
+      background: #17251f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      transition: 0.2s;
+    }
+
+    .upload-area:hover {
+      border-color: #4fa393;
+      background: #1b2d26;
+      transform: scale(1.02);
+    }
+
+    .upload-area.dragging {
+      border-color: #e58b42;
+    }
+
+    .upload-content {
+      padding: 20px;
+      pointer-events: none;
+    }
+
+    .camera {
+      font-size: 45px;
+      margin-bottom: 12px;
+    }
+
+    .upload-content strong {
+      display: block;
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .upload-content span {
+      color: #e58b42;
+      font-size: 14px;
+    }
+
+    #preview {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    #imageInput {
+      display: none;
+    }
+
+    .filename {
+      text-align: center;
+      min-height: 25px;
+      color: #9aaba3;
+      font-size: 13px;
+      margin-bottom: 18px;
+      word-break: break-word;
+    }
+
+    .button {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 15px;
+      background: #4fa393;
+      color: #07110e;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      filter: brightness(1.1);
+    }
+
+    .button:disabled {
+      background: #26352f;
+      color: #75857e;
+      cursor: not-allowed;
+    }
+
+    .hint {
+      text-align: center;
+      color: #718078;
+      font-size: 12px;
+      margin-top: 15px;
+    }
+
+    /* RESULTS */
+
+    .empty {
+      color: #9aaba3;
+      padding: 20px 0;
+    }
+
+    .results {
+      display: none;
+    }
+
+    .result-row {
+      padding: 20px 0;
+      border-bottom: 1px solid #293731;
+    }
+
+    .label {
+      color: #8d9e96;
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .disease {
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .value {
+      font-size: 18px;
+      margin-top: 8px;
+    }
+
+    .bar {
+      width: 100%;
+      height: 9px;
+      background: #26352f;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
+
+    .fill {
+      width: 0%;
+      height: 100%;
+      background: #4fa393;
+      transition: width 0.7s ease;
+    }
+
+    .reason,
+    .summary {
+      color: #dce3df;
+      line-height: 1.6;
+    }
+
+    .error {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #351d19;
+      border: 1px solid #73382e;
+      color: #f19b8b;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 45px;
+      padding-top: 20px;
+      border-top: 1px solid #293731;
+      color: #718078;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    @media (max-width: 800px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo">SKIN DISEASE AI</div>
+    <div class="status" id="status">● READY</div>
+  </header>
+
+  <section class="hero">
+    <small>DERMOSCOPY · AI IMAGE ANALYSIS</small>
+    <h1>Skin Disease AI</h1>
+    <p>
+      Upload a skin image and get an AI-powered classification
+      with confidence scoring.
+    </p>
+  </section>
+
+  <main class="grid">
+
+    <!-- UPLOAD CARD -->
+
+    <section class="card">
+
+      <div class="card-title">SAMPLE INPUT</div>
+
+      <!-- IMPORTANT:
+           The label itself opens the file picker.
+           No JavaScript click is required.
+      -->
+
+      <label class="upload-area" id="uploadArea" for="imageInput">
+
+        <img id="preview" alt="Selected skin image">
+
+        <div class="upload-content" id="uploadContent">
+          <div class="camera">📷</div>
+          <strong>Click to upload</strong>
+          <span>or drag an image here</span>
+        </div>
+
+      </label>
+
+      <!-- ONLY ONE FILE INPUT -->
+
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/jpeg,image/png,image/jpg,image/webp"
+      >
+
+      <div class="filename" id="filename">
+        No image selected
+      </div>
+
+      <button
+        class="button"
+        id="analyzeButton"
+        type="button"
+        disabled
+      >
+        Run Analysis
+      </button>
+
+      <div class="hint">
+        JPG · PNG · WEBP
+      </div>
+
+      <div class="error" id="error"></div>
+
+    </section>
+
+
+    <!-- RESULTS CARD -->
+
+    <section class="card">
+
+      <div class="card-title">ANALYSIS READOUT</div>
+
+      <div class="empty" id="emptyResult">
+        No sample analyzed yet.
+        Upload an image and click Run Analysis.
+      </div>
+
+      <div class="results" id="results">
+
+        <div class="result-row">
+
+          <div class="label">CLASSIFICATION</div>
+
+          <div class="disease" id="disease">
+            —
+          </div>
+
+        </div>
+
+
+        <div class="result-row">
+
+          <div class="label">CONFIDENCE</div>
+
+          <div class="bar">
+            <div class="fill" id="confidenceBar"></div>
+          </div>
+
+          <div class="value" id="confidence">
+            0%
+          </div>
+
+        </div>
+
+
+        <div class="result-row">
+
+          <div class="label">SKIN LIKELIHOOD</div>
+
+          <div class="bar">
+            <div class="fill" id="skinBar"></div>
+          </div>
+
+          <div class="value" id="skin">
+            N/A
+          </div>
+
+        </div>
+
+
+        <div class="result-row">
+
+          <div class="label">REASON</div>
+
+          <div class="reason" id="reason">
+            —
+          </div>
+
+        </div>
+
+
+        <div class="result-row">
+
+          <div class="label">SUMMARY</div>
+
+          <div class="summary" id="summary">
+            —
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+
+    <span>
+      For research and educational use only.
+      Not a diagnostic medical device.
+    </span>
+
+    <span>
+      API: 127.0.0.1:7860/predict
+    </span>
+
+  </footer>
+
+</div>
+
+
+<script>
+
+  /*
+   * ==========================================
+   * SKIN DISEASE AI FRONTEND
+   * ==========================================
+   */
+
+  const API_URL = "http://127.0.0.1:7860/predict";
+
+
+  // Get HTML elements
+
+  const imageInput = document.getElementById("imageInput");
+
+  const uploadArea = document.getElementById("uploadArea");
+
+  const preview = document.getElementById("preview");
+
+  const uploadContent = document.getElementById("uploadContent");
+
+  const filename = document.getElementById("filename");
+
+  const analyzeButton = document.getElementById("analyzeButton");
+
+  const status = document.getElementById("status");
+
+  const errorBox = document.getElementById("error");
+
+
+  let selectedFile = null;
+
+
+  // ==========================================
+  // FILE SELECTED
+  // ==========================================
+
+  imageInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    handleFile(file);
+
+  });
+
+
+  // ==========================================
+  // HANDLE FILE
+  // ==========================================
+
+  function handleFile(file) {
+
+    if (!file.type.startsWith("image/")) {
+
+      showError("Please select a JPG, PNG or WEBP image.");
+
+      return;
+    }
+
+
+    selectedFile = file;
+
+
+    // Preview
+
+    const imageURL = URL.createObjectURL(file);
+
+    preview.src = imageURL;
+
+    preview.style.display = "block";
+
+    uploadContent.style.display = "none";
+
+
+    // Filename
+
+    filename.textContent =
+      file.name + " (" + formatSize(file.size) + ")";
+
+
+    // Enable button
+
+    analyzeButton.disabled = false;
+
+
+    // Reset messages
+
+    errorBox.style.display = "none";
+
+    status.textContent = "● IMAGE READY";
+
+    status.className = "status ready";
+
+  }
+
+
+  // ==========================================
+  // FORMAT FILE SIZE
+  // ==========================================
+
+  function formatSize(bytes) {
+
+    if (bytes < 1024) {
+
+      return bytes + " B";
+
+    }
+
+    if (bytes < 1024 * 1024) {
+
+      return (bytes / 1024).toFixed(1) + " KB";
+
+    }
+
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+
+  }
+
+
+  // ==========================================
+  // DRAG & DROP
+  // ==========================================
+
+  uploadArea.addEventListener("dragover", function (event) {
+
+    event.preventDefault();
+
+    uploadArea.classList.add("dragging");
+
+  });
+
+
+  uploadArea.addEventListener("dragleave", function () {
+
+    uploadArea.classList.remove("dragging");
+
+  });
+
+
+  uploadArea.addEventListener("drop", function (event) {
+
+    event.preventDefault();
+
+    uploadArea.classList.remove("dragging");
+
+
+    const file = event.dataTransfer.files[0];
+
+    if (file) {
+
+      handleFile(file);
+
+    }
+
+  });
+
+
+  // ==========================================
+  // ANALYZE BUTTON
+  // ==========================================
+
+  analyzeButton.addEventListener("click", analyzeImage);
+
+
+  async function analyzeImage() {
+
+    if (!selectedFile) {
+
+      showError("Please select an image first.");
+
+      return;
+    }
+
+
+    analyzeButton.disabled = true;
+
+    analyzeButton.textContent = "Analyzing...";
+
+    status.textContent = "● ANALYZING";
+
+    status.className = "status";
+
+
+    errorBox.style.display = "none";
+
+
+    // Create multipart form
+
+    const formData = new FormData();
+
+    /*
+     * IMPORTANT:
+     * FastAPI expects the field name "file".
+     */
+
+    formData.append("file", selectedFile);
+
+
+    try {
+
+      console.log("Sending image to:", API_URL);
+
+
+      const response = await fetch(API_URL, {
+
+        method: "POST",
+
+        body: formData
+
+      });
+
+
+      console.log("Server status:", response.status);
+
+
+      let data;
+
+
+      try {
+
+        data = await response.json();
+
+      } catch (e) {
+
+        throw new Error(
+          "Server returned an invalid response."
+        );
+
+      }
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.detail ||
+          "The server rejected the image."
+        );
+
+      }
+
+
+      console.log("Prediction response:", data);
+
+
+      showResults(data);
+
+
+      status.textContent = "● COMPLETE";
+
+      status.className = "status ready";
+
+    }
+
+
+    catch (error) {
+
+      console.error("Analysis error:", error);
+
+
+      if (error instanceof TypeError) {
+
+        showError(
+          "Cannot connect to FastAPI. " +
+          "Make sure the backend is running at " +
+          "http://127.0.0.1:7860"
+        );
+
+      } else {
+
+        showError(error.message);
+
+      }
+
+
+      status.textContent = "● ERROR";
+
+      status.className = "status error";
+
+    }
+
+
+    finally {
+
+      analyzeButton.disabled = false;
+
+      analyzeButton.textContent = "Run Analysis";
+
+    }
+
+  }
+
+
+  // ==========================================
+  // DISPLAY RESULTS
+  // ==========================================
+
+  function showResults(data) {
+
+    const disease =
+      data.display_label ||
+      data.predicted_class ||
+      data.class_name ||
+      "Unknown";
+
+
+    let confidence =
+      Number(data.confidence || 0);
+
+
+    /*
+     * Backend normally returns confidence
+     * between 0 and 1.
+     */
+
+    if (confidence <= 1) {
+
+      confidence = confidence * 100;
+
+    }
+
+
+    let skinLikelihood = null;
+
+
+    if (data.skin_likelihood !== undefined) {
+
+      skinLikelihood =
+        Number(data.skin_likelihood);
+
+
+      if (skinLikelihood <= 1) {
+
+        skinLikelihood =
+          skinLikelihood * 100;
+
+      }
+
+    }
+
+
+    const reason =
+      data.reason ||
+      "Prediction completed successfully.";
+
+
+    let summary = "N/A";
+
+
+    if (
+      data.predictions &&
+      data.predictions.length > 0 &&
+      data.predictions[0].disease_info
+    ) {
+
+      summary =
+        data.predictions[0].disease_info.summary ||
+        "N/A";
+
+    }
+
+
+    // Classification
+
+    document.getElementById("disease").textContent =
+      disease;
+
+
+    // Confidence
+
+    document.getElementById("confidence").textContent =
+      confidence.toFixed(1) + "%";
+
+
+    document.getElementById("confidenceBar").style.width =
+      Math.min(confidence, 100) + "%";
+
+
+    // Skin likelihood
+
+    if (skinLikelihood !== null) {
+
+      document.getElementById("skin").textContent =
+        skinLikelihood.toFixed(1) + "%";
+
+
+      document.getElementById("skinBar").style.width =
+        Math.min(skinLikelihood, 100) + "%";
+
+    } else {
+
+      document.getElementById("skin").textContent =
+        "N/A";
+
+      document.getElementById("skinBar").style.width =
+        "0%";
+
+    }
+
+
+    // Reason
+
+    document.getElementById("reason").textContent =
+      reason;
+
+
+    // Summary
+
+    document.getElementById("summary").textContent =
+      summary;
+
+
+    // Show results
+
+    document.getElementById("emptyResult").style.display =
+      "none";
+
+
+    document.getElementById("results").style.display =
+      "block";
+
+  }
+
+
+  // ==========================================
+  // ERROR
+  // ==========================================
+
+  function showError(message) {
+
+    errorBox.textContent = message;
+
+    errorBox.style.display = "block";
+
+  }
+
+
+  // ==========================================
+  // INITIAL STATE
+  // ==========================================
+
+  console.log("Skin Disease AI frontend loaded.");
+
+  console.log("API:", API_URL);
+
+</script>
+
+</body>
+</html>
