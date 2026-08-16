@@ -1,21 +1,52 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
+
+# Virtual environments
 .venv/
 venv/
 env/
 
-# Large model files & logs
-models/
-data/
-cache/
-logs/
-wandb/
-*.pt
-*.pth
-*.tfevents*
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / Editor
+.vscode/
+.idea/
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Python build files
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+.pytest_cache/
+.mypy_cache/
+
+# Large ML model files
+*.pt
+*.pth
+*.onnx
+*.h5
+*.keras
+*.ckpt
+
+# Temporary files
+*.tmp
+*.temp
+
+# Environment / secrets
+.env
+
+# Keep project folders themselves visible
+# Do NOT ignore data/, models/, frontend/, deploy/, src/
