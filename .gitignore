@@ -1,33 +1,21 @@
 # Python
 __pycache__/
-*.py[cod]
+*.pyc
 *.pyo
-
-# Virtual environments
 .venv/
 venv/
 env/
 
-# Environment / secrets
-.env
-.env.*
-!.env.example
-
-# Testing / linting
-.pytest_cache/
-.ruff_cache/
-
-# Caches / experiment logs
+# Large model files & logs
+models/
+data/
 cache/
+logs/
 wandb/
-runs/
+*.pt
+*.pth
+*.tfevents*
 
 # OS files
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Raw datasets
-data/raw/
