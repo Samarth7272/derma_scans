@@ -14,6 +14,7 @@ env/
 # IDE / Editor
 .vscode/
 .idea/
+.vs/
 
 # OS files
 .DS_Store
@@ -33,7 +34,7 @@ logs/
 .pytest_cache/
 .mypy_cache/
 
-# Large ML model files
+# Large ML model files (best.pt is too big for GitHub)
 *.pt
 *.pth
 *.onnx
@@ -48,11 +49,10 @@ logs/
 # Environment / secrets
 .env
 
-# Keep project folders themselves visible
-# Do NOT ignore data/, models/, frontend/, deploy/, src/cache/
-data/
-models/
+# Root-level data and model files only (the leading slash keeps
+# src/skin_disease_ai/data and src/skin_disease_ai/models tracked)
+/data/
+/models/
+
+# Frontend packages
 frontend/node_modules/
-.venv/
-__pycache__/
-*.pyc

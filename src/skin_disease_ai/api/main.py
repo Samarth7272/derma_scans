@@ -10,6 +10,7 @@ import numpy as np
 import torch
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from PIL import Image, ImageOps
 
 from skin_disease_ai.config import load_config
@@ -106,7 +107,7 @@ async def predict(file: UploadFile = File(...), topk: int = 5, gradcam: bool = T
         denoise=cfg.data.denoise,
     )
     transform = build_transforms(cfg.data.image_size, split="test", augmentation="none")
-    tensor = transform(image=processed)["image"].unsqueeze(0).to(STATE["device"])
+    tensor = transform(processed).unsqueeze(0).to(STATE["device"])
     model = STATE["model"]
     with torch.no_grad():
         probs = model(tensor).softmax(1)[0].detach().cpu().numpy()
@@ -179,3 +180,13 @@ async def predict(file: UploadFile = File(...), topk: int = 5, gradcam: bool = T
         except Exception as exc:
             response["gradcam_error"] = str(exc)
     return response
+
+@app.get("/")
+def home():
+    return {
+        "message": "Skin Disease AI API is running",
+        "docs": "/docs"
+    }
+
+    from fastapi.staticfiles import StaticFiles
+app.mount("/ui", StaticFiles(directory="frontend", html=True), name="ui")

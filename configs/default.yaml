@@ -1,0 +1,5 @@
+data:
+  apply_clahe: false
+  remove_hair: false
+  denoise: false
+  image_size: 224
