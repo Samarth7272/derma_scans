@@ -51,6 +51,34 @@
 - **Why it matters:** It goes beyond "train a model". It covers preprocessing, input validation, uncertainty-aware rejection, explainability, a REST API, logging and a usable frontend.
 - **Deliberate design:** The system does not blindly trust the model. Skin-likelihood, confidence, margin and entropy checks reject unrelated or unclear images rather than returning a wrong label.
 - **Stack:** Python 3.11 · PyTorch · FastAPI · OpenCV · Grad-CAM (custom implementation) · HTML/CSS/JS.
+- **Try it in 2 minutes:** Clone, add the model file, double-click `run.bat`, and open the web app. See [Getting Started](#-getting-started).
+
+---
+
+## 📸 Screenshots
+
+### 1. Upload and classification
+
+
+![Upload and classification result](docs/01-upload-result.png)
+
+
+
+### 2. Confidence, skin likelihood, reason and advice
+
+
+![Analysis details](docs/02-analysis-details.png)
+
+
+
+### 3. Grad-CAM explainability heatmap
+
+
+![Grad-CAM heatmap](docs/03-gradcam-heatmap.png)
+
+
+
+> The app labels every result as research-only and recommends consulting a qualified dermatologist.
 
 ---
 
@@ -59,18 +87,19 @@
 1. [The Problem](#-the-problem)
 2. [Key Features](#-key-features)
 3. [How It Works](#️-how-it-works)
-4. [Screenshots](#-screenshots)
-5. [Tech Stack](#-tech-stack)
-6. [Project Structure](#-project-structure)
-7. [Getting Started](#-getting-started)
-8. [Usage](#️-usage)
-9. [API Reference](#-api-reference)
-10. [Configuration](#️-configuration)
-11. [Model Details](#-model-details)
-12. [Skills Demonstrated](#-skills-demonstrated)
-13. [Limitations](#️-limitations)
-14. [Future Improvements](#-future-improvements)
-15. [Author](#-about-the-author)
+4. [Results at a Glance](#-results-at-a-glance)
+5. [Design Decisions](#-design-decisions)
+6. [Tech Stack](#-tech-stack)
+7. [Project Structure](#-project-structure)
+8. [Getting Started](#-getting-started)
+9. [Usage](#️-usage)
+10. [API Reference](#-api-reference)
+11. [Configuration](#️-configuration)
+12. [Model Details](#-model-details)
+13. [Skills Demonstrated](#-skills-demonstrated)
+14. [Limitations](#️-limitations)
+15. [Future Improvements](#-future-improvements)
+16. [About the Author](#-about-the-author)
 
 ---
 
@@ -120,19 +149,31 @@ flowchart LR
 
 ---
 
-## 📸 Screenshots
+## 📊 Results at a Glance
 
-| Upload & Result | Grad-CAM Heatmap |
+Example from the screenshots above, using a dermoscopy image of a **Dermatofibroma (DF)** lesion:
+
+| Output | Value |
 |---|---|
-| 
+| Classification | Dermatofibroma (DF) |
+| Confidence | 59.5% |
+| Skin likelihood | 99.3% |
+| Decision | `accepted` |
+| Explanation | Grad-CAM heatmap (red/yellow = most influential regions) |
 
-![Upload and result](docs/upload_result.png)
+Every response also includes the **margin**, **entropy**, top-K predictions, disease description and advice. See the [API Reference](#-api-reference).
 
- | 
+---
 
-![Grad-CAM heatmap](docs/gradcam_heatmap.png)
+## 🧠 Design Decisions
 
- |
+- **Reject instead of guess:** A skin-likelihood gate plus confidence, margin and entropy thresholds stop the model from labelling photos that are not skin or are too uncertain. This is a safety-first choice for a medical-style use case.
+- **Explainability by default:** A custom Grad-CAM implementation shows which regions drove each accepted prediction, so users and reviewers can sanity-check the model.
+- **Config-driven preprocessing:** CLAHE, hair removal, denoising and image size live in `configs/default.yaml`. They must match training, so they are kept out of the code.
+- **Tunable thresholds:** All rejection thresholds are environment variables, so behaviour can be adjusted without code changes.
+- **Auditability:** Every request gets a `request_id` and is logged to JSON Lines, which makes failures easy to trace and review.
+- **Separation of concerns:** API, rejection logic, preprocessing, model loading, explainability and disease info are separate modules.
+- **Responsible framing:** Disclaimers appear in the README and in the UI footer, and the advice always points users to a dermatologist.
 
 ---
 
@@ -157,6 +198,7 @@ flowchart LR
 derma_scans/
 ├── configs/
 │   └── default.yaml            # Preprocessing settings (CLAHE, hair removal, ...)
+├── docs/                       # README screenshots
 ├── frontend/
 │   └── index.html              # Web interface
 ├── models/
@@ -240,7 +282,7 @@ Wait for `Application startup complete`, then open:
 ## 🕹️ Usage
 
 1. Open http://127.0.0.1:8000/ui/
-2. Click the circle (or drag and drop) to upload a skin image.
+2. Click the circle (or drag and drop) to upload a skin image (JPG, PNG or WEBP).
 3. Press **Run Analysis**.
 4. Read the result:
    - **Classification** and **confidence**
@@ -338,7 +380,7 @@ data:
 
 ---
 
-## 🧠 Model Details
+## 🧬 Model Details
 
 <!-- TODO: add Architecture (e.g. ResNet / EfficientNet), Dataset name and size, number of classes, and Accuracy / F1 to this table. Recruiters look for these numbers. -->
 
@@ -379,6 +421,7 @@ data:
 
 - [ ] 🌐 Deploy online (Render / Hugging Face Spaces)
 - [ ] 🩻 Add more disease classes and a larger, more diverse dataset
+- [ ] 📖 Richer disease descriptions for every class
 - [ ] 🌍 Multi-language disease information
 - [ ] 👤 User accounts and a history dashboard
 - [ ] 📱 Mobile-friendly camera capture
