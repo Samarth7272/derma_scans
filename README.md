@@ -2,52 +2,83 @@
 
 # 🩺 Skin Disease AI
 
-### Deep-learning skin image classification with explainable Grad-CAM heatmaps
+### Deep-Learning Skin Image Classification with Explainable Grad-CAM Heatmaps
+
+*Upload a skin image and get a prediction, a confidence score, disease information and a heatmap showing **why** the model decided that. A built-in rejection pipeline refuses non-skin and uncertain images instead of guessing.*
+
+
 
 ![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
+
+
+
+
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
+
+
+
+
 ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
+
+
+
+
 ![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white)
-![HTML5](https://img.shields.io/badge/Frontend-HTML%20%2F%20CSS%20%2F%20JS-E34F26?logo=html5&logoColor=white)
+
+
+
+
+![Frontend](https://img.shields.io/badge/Frontend-HTML%20%2F%20CSS%20%2F%20JS-E34F26)
+
+
+
+
 ![Status](https://img.shields.io/badge/Status-Working-brightgreen)
 
-**Upload a skin image → get a prediction, a confidence score, disease information and a heatmap showing *why* the model decided that.**
+
+
+[📧 Hire Me](mailto:samarthworldwide@gmail.com) · [💼 LinkedIn](https://www.linkedin.com/in/samarth-shukla-b72003293) · [🐙 GitHub](https://github.com/Samarth7272)
 
 </div>
 
+> ⚠️ **Medical disclaimer:** This project is built for **research and educational purposes only**. It is **not** a medical device and must **not** be used for diagnosis or treatment decisions. Always consult a qualified dermatologist.
+
 ---
 
-> ⚠️ **Medical disclaimer:** This project is built for **research and educational purposes only**.
-> It is **not** a medical device and must **not** be used for diagnosis or treatment decisions.
-> Always consult a qualified dermatologist.
+## 📌 TL;DR (for recruiters)
+
+- **What:** An end-to-end skin disease classifier: image upload → validation → deep-learning prediction → explainable Grad-CAM heatmap, served through a FastAPI backend and a web UI.
+- **Why it matters:** It goes beyond "train a model". It covers preprocessing, input validation, uncertainty-aware rejection, explainability, a REST API, logging and a usable frontend.
+- **Deliberate design:** The system does not blindly trust the model. Skin-likelihood, confidence, margin and entropy checks reject unrelated or unclear images rather than returning a wrong label.
+- **Stack:** Python 3.11 · PyTorch · FastAPI · OpenCV · Grad-CAM (custom implementation) · HTML/CSS/JS.
 
 ---
 
 ## 📑 Table of Contents
 
-1. [Overview](#-overview)
+1. [The Problem](#-the-problem)
 2. [Key Features](#-key-features)
-3. [How It Works](#-how-it-works)
+3. [How It Works](#️-how-it-works)
 4. [Screenshots](#-screenshots)
 5. [Tech Stack](#-tech-stack)
 6. [Project Structure](#-project-structure)
 7. [Getting Started](#-getting-started)
-8. [Usage](#-usage)
+8. [Usage](#️-usage)
 9. [API Reference](#-api-reference)
-10. [Configuration](#-configuration)
+10. [Configuration](#️-configuration)
 11. [Model Details](#-model-details)
-12. [Limitations](#-limitations)
-13. [Future Improvements](#-future-improvements)
-14. [Author](#-author)
+12. [Skills Demonstrated](#-skills-demonstrated)
+13. [Limitations](#️-limitations)
+14. [Future Improvements](#-future-improvements)
+15. [Author](#-about-the-author)
 
 ---
 
-## 🔎 Overview
+## 🎯 The Problem
 
-**Skin Disease AI** is an end-to-end web application that classifies skin images using a trained deep-learning model.
-It combines a **FastAPI** backend, a clean **web interface**, and **Grad-CAM** explainability so users can see which region of the image influenced the prediction.
+Most image classifiers always return an answer, even for a photo of a cat or a blurry, uncertain image. In a medical context, a confident wrong label is worse than no label. Black-box predictions also give users no way to see what the model is looking at.
 
-The system does not blindly trust the model. A built-in **rejection pipeline** checks whether the uploaded picture is actually skin and whether the model is confident enough, so unrelated or unclear images are flagged instead of receiving a wrong disease label.
+**Skin Disease AI** treats this as a trust problem. It validates the input, rejects what it cannot classify reliably, and explains every accepted prediction with a visual heatmap.
 
 ---
 
@@ -55,7 +86,7 @@ The system does not blindly trust the model. A built-in **rejection pipeline** c
 
 | Feature | Description |
 |---|---|
-| 🧠 **Disease classification** | Predicts the most likely skin condition and returns the top-K predictions with confidence scores |
+| 🧠 **Disease classification** | Predicts the most likely skin condition and returns top-K predictions with confidence scores |
 | 🔥 **Grad-CAM heatmap** | Visual explanation highlighting the image regions that drove the prediction |
 | 🛡️ **Smart rejection** | Rejects non-skin images and uncertain predictions using skin-likelihood, confidence, margin and entropy checks |
 | 🟢 **Normal-skin handling** | Recognises normal/healthy skin results and avoids unnecessary heatmaps |
@@ -77,9 +108,7 @@ flowchart LR
     D --> E{Decision logic<br/>confidence · margin · entropy}
     E -->|Rejected| F[❌ Non-skin / uncertain]
     E -->|Normal| G[🟢 Normal skin]
-    E -->|Accepted| H[✅ Disease prediction]
-    H --> I[🔥 Grad-CAM heatmap]
-    H --> J[📖 Disease info + advice]
+    E -->|Accepted| H[✅ Disease prediction + Grad-CAM]
 ```
 
 1. **Upload:** the image is read and its orientation is corrected.
@@ -93,33 +122,41 @@ flowchart LR
 
 ## 📸 Screenshots
 
-> Add your own screenshots to a `docs/` folder and they will show up here.
-
 | Upload & Result | Grad-CAM Heatmap |
 |---|---|
-| ![Result](docs/result.png) | ![Heatmap](docs/gradcam.png) |
+| 
+
+![Upload and result](docs/upload_result.png)
+
+ | 
+
+![Grad-CAM heatmap](docs/gradcam_heatmap.png)
+
+ |
 
 ---
 
 ## 🧰 Tech Stack
 
-- **Language:** Python 3.11
-- **Backend:** FastAPI, Uvicorn
-- **Deep learning:** PyTorch, Torchvision
-- **Image processing:** OpenCV, Pillow, NumPy
-- **Explainability:** Grad-CAM (custom implementation)
-- **Frontend:** HTML, CSS, vanilla JavaScript
-- **Config:** YAML
-- **Logging:** JSON Lines
+| Area | Technology |
+|---|---|
+| **Language** | Python 3.11 |
+| **Backend** | FastAPI, Uvicorn |
+| **Deep learning** | PyTorch, Torchvision |
+| **Image processing** | OpenCV, Pillow, NumPy |
+| **Explainability** | Grad-CAM (custom implementation) |
+| **Frontend** | HTML, CSS, vanilla JavaScript |
+| **Config** | YAML |
+| **Logging** | JSON Lines |
 
 ---
 
 ## 📂 Project Structure
 
 ```
-skin_d-main/
+derma_scans/
 ├── configs/
-│   └── default.yaml            # Preprocessing settings (CLAHE, hair removal, image size)
+│   └── default.yaml            # Preprocessing settings (CLAHE, hair removal, ...)
 ├── frontend/
 │   └── index.html              # Web interface
 ├── models/
@@ -149,10 +186,12 @@ skin_d-main/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Windows with **Python 3.11**
 - The trained model file `best.pt`
 
 ### 1. Clone the repository
+
 ```bash
 git clone https://github.com/Samarth7272/derma_scans.git
 cd derma_scans
@@ -160,6 +199,7 @@ git checkout clean-main
 ```
 
 ### 2. Create a virtual environment and install packages
+
 ```bash
 py -3.11 -m venv .venv
 .venv\Scripts\activate
@@ -167,16 +207,19 @@ pip install -r requirements.txt
 ```
 
 ### 3. Add the model
+
 The trained weights are too large for GitHub. Put your model file here:
+
 ```
 models/best.pt
 ```
 
 ### 4. Run the project
 
-**Easiest:** double-click **`run.bat`**
+**Easiest:** double-click `run.bat`
 
 **Or manually:**
+
 ```bash
 set PYTHONPATH=src
 set CHECKPOINT_PATH=models\best.pt
@@ -196,9 +239,9 @@ Wait for `Application startup complete`, then open:
 
 ## 🕹️ Usage
 
-1. Open **http://127.0.0.1:8000/ui/**
-2. Click the circle (or drag and drop) to upload a skin image
-3. Press **Run Analysis**
+1. Open http://127.0.0.1:8000/ui/
+2. Click the circle (or drag and drop) to upload a skin image.
+3. Press **Run Analysis**.
 4. Read the result:
    - **Classification** and **confidence**
    - **Skin likelihood**
@@ -232,12 +275,14 @@ Wait for `Application startup complete`, then open:
 **Body:** `multipart/form-data` with a `file` field containing the image.
 
 **Example**
+
 ```bash
 curl -X POST "http://127.0.0.1:8000/predict?topk=5&gradcam=true" \
      -F "file=@sample.jpg"
 ```
 
 **Response (abridged)**
+
 ```json
 {
   "request_id": "cbbf994a-a799-4bd7-8227-1c46396641ea",
@@ -266,6 +311,7 @@ curl -X POST "http://127.0.0.1:8000/predict?topk=5&gradcam=true" \
 ## 🎛️ Configuration
 
 ### `configs/default.yaml`
+
 ```yaml
 data:
   apply_clahe: true     # contrast enhancement
@@ -294,21 +340,35 @@ data:
 
 ## 🧠 Model Details
 
-Fill in the details of your own training run:
+<!-- TODO: add Architecture (e.g. ResNet / EfficientNet), Dataset name and size, number of classes, and Accuracy / F1 to this table. Recruiters look for these numbers. -->
 
 | Item | Value |
 |---|---|
-| Architecture | _e.g. ResNet / EfficientNet_ |
-| Dataset | _name and number of images_ |
-| Number of classes | _see `/classes`_ |
+| Framework | PyTorch |
 | Input size | 224 × 224 |
-| Accuracy / F1 | _add your results_ |
+| Preprocessing | CLAHE contrast enhancement, hair removal, resize |
+| Explainability | Grad-CAM (custom implementation) |
+| Classes | See the `/classes` endpoint |
+
+---
+
+## 🎓 Skills Demonstrated
+
+- Training and deploying a **deep-learning image classifier** (PyTorch)
+- **Explainable AI**: a custom Grad-CAM implementation
+- **Uncertainty-aware inference**: rejection using confidence, margin and entropy
+- **Computer vision preprocessing** with OpenCV (CLAHE, hair removal, denoising)
+- **REST API design** with FastAPI and auto-generated Swagger docs
+- **Configuration management** with YAML and environment variables
+- A **frontend** with drag-and-drop upload and live results
+- **Structured prediction logging** (JSON Lines)
+- **Responsible AI practice**: clear disclaimers and documented limitations
 
 ---
 
 ## ⚠️ Limitations
 
-- Predictions are only as good as the training data; unusual lighting, skin tones or image quality can reduce accuracy.
+- Predictions are only as good as the training data. Unusual lighting, skin tones or image quality can reduce accuracy.
 - The model only knows the classes it was trained on.
 - Confidence scores are not clinical probabilities.
 - Not validated for clinical use.
@@ -317,26 +377,47 @@ Fill in the details of your own training run:
 
 ## 🔮 Future Improvements
 
-- Deploy online (Render / Hugging Face Spaces)
-- Add more disease classes and a larger, more diverse dataset
-- Multi-language disease information
-- User accounts and a history dashboard
-- Mobile-friendly camera capture
-- Model calibration and uncertainty estimation
+- [ ] 🌐 Deploy online (Render / Hugging Face Spaces)
+- [ ] 🩻 Add more disease classes and a larger, more diverse dataset
+- [ ] 🌍 Multi-language disease information
+- [ ] 👤 User accounts and a history dashboard
+- [ ] 📱 Mobile-friendly camera capture
+- [ ] 🎯 Model calibration and uncertainty estimation
+- [ ] 🐳 Docker image and 🧪 automated tests with CI
 
 ---
 
-## 👤 Author
+## 👨‍💻 About the Author
 
-**Samarth Shukla**
-B.Tech Computer Science & Engineering
-GitHub: [@Samarth7272](https://github.com/Samarth7272)
+**Samarth Shukla** is a B.Tech Computer Science student and Software Engineer Intern at LV8, building AI-powered and full-stack applications.
+
+**Skills:** Python · PyTorch · FastAPI · Scikit-learn · NLP · LangChain · Hugging Face · JavaScript/TypeScript · React/Next.js · SQL · Docker · AWS · Git
+
+### 💼 Open to Opportunities
+
+I'm actively looking for **AI/ML, Backend and Full-Stack** roles (full-time and internships). If this project caught your eye, I'd love to talk.
+
+[
+
+![Email](https://img.shields.io/badge/Email-samarthworldwide%40gmail.com-D14836?logo=gmail&logoColor=white)
+
+](mailto:samarthworldwide@gmail.com)
+[
+
+![LinkedIn](https://img.shields.io/badge/LinkedIn-Samarth%20Shukla-0A66C2?logo=linkedin&logoColor=white)
+
+](https://www.linkedin.com/in/samarth-shukla-b72003293)
+[
+
+![GitHub](https://img.shields.io/badge/GitHub-Samarth7272-181717?logo=github&logoColor=white)
+
+](https://github.com/Samarth7272)
 
 ---
 
 <div align="center">
 
-⭐ If you found this project useful, consider giving it a star.
+⭐ If you found this project useful, please give it a star!
 
 *Built for learning and research. Not for medical use.*
 
