@@ -6,36 +6,13 @@
 
 *Upload a skin image and get a prediction, a confidence score, disease information and a heatmap showing **why** the model decided that. A built-in rejection pipeline refuses non-skin and uncertain images instead of guessing.*
 
-
-
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-
-
-
-
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
-
-
-
-
-![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white)
-
-
-
-
-![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white)
-
-
-
-
-![Frontend](https://img.shields.io/badge/Frontend-HTML%20%2F%20CSS%20%2F%20JS-E34F26)
-
-
-
-
-![Status](https://img.shields.io/badge/Status-Working-brightgreen)
-
-
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" />
+  <img src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white" />
+  <img src="https://img.shields.io/badge/PyTorch-EE4C2C?logo=pytorch&logoColor=white" />
+  <img src="https://img.shields.io/badge/OpenCV-5C3EE8?logo=opencv&logoColor=white" />
+  <img src="https://img.shields.io/badge/Status-Working-brightgreen" />
+</p>
 
 [📧 Hire Me](mailto:samarthworldwide@gmail.com) · [💼 LinkedIn](https://www.linkedin.com/in/samarth-shukla-b72003293) · [🐙 GitHub](https://github.com/Samarth7272)
 
@@ -60,21 +37,21 @@
 ### 1. Upload and classification
 
 
-![Upload and classification result](docs/01-upload-result.png)
+![Upload and classification result](docs/01-upload-result.jpeg)
 
 
 
 ### 2. Confidence, skin likelihood, reason and advice
 
 
-![Analysis details](docs/02-analysis-details.png)
+![Analysis details](docs/02-analysis-details.jpeg)
 
 
 
 ### 3. Grad-CAM explainability heatmap
 
 
-![Grad-CAM heatmap](docs/03-gradcam-heatmap.png)
+![Grad-CAM heatmap](docs/03-gradcam-heatmap.jpeg)
 
 
 
