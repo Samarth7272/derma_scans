@@ -407,7 +407,7 @@ data:
 
 ---
 
-## 👨‍💻 About the Author
+## 👨‍💻 About the Author 🗼
 
 **Samarth Shukla** is a B.Tech Computer Science student and Software Engineer Intern at LV8, building AI-powered and full-stack applications.
 
