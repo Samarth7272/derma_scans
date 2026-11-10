@@ -2,6 +2,7 @@
 
 # 🩺 Skin Disease AI
 
+### Deep-Learning Skin Image Classification with Explainable Grad-CAM Heatmaps
 
 
 *Upload a skin image and get a prediction, a confidence score, disease information and a heatmap showing **why** the model decided that. A built-in rejection pipeline refuses non-skin and uncertain images instead of guessing.*
