@@ -54,7 +54,6 @@
 ![Grad-CAM heatmap](docs/03-gradcam-heatmap.jpeg)
 
 
-
 > The app labels every result as research-only and recommends consulting a qualified dermatologist.
 
 ---
