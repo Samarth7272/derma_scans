@@ -415,7 +415,7 @@ data:
 
 ### 💼 Open to Opportunities
 
-
+I'm actively looking for **AI/ML, Backend and Full-Stack** roles (full-time and internships). If this project caught your eye, I'd love to talk.
 
 [
 
